@@ -1,0 +1,14 @@
+{
+  "name": "ratoi-crysty",
+  "owner": {
+    "name": "Cristi Ratoi",
+    "email": "ratoi.crysty@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "skills",
+      "source": "./",
+      "description": "Personal skills — frontend component conventions"
+    }
+  ]
+}
