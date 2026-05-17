@@ -9,7 +9,7 @@ description: Conventions for authoring NestJS backends — TypeORM entities inhe
 
 1. **TypeORM** for persistence — entities, repositories, migrations.
 2. **Shared model interface** in an NX `common` lib; `Entity` classes implement it so DTOs/clients share the contract.
-3. **CRUD-first** — prefer `@nestjsx/crud` (or framework equivalent) controllers/services; drop to bespoke handlers only when CRUD cannot express the operation.
+3. **CRUD-first** — drop to bespoke handlers only when CRUD cannot express the operation.
 4. **Swagger everywhere** — every controller, route, DTO, and entity decorated with `@nestjs/swagger` so OpenAPI is complete.
 5. **Global AuthGuard** registered via `APP_GUARD`; routes are protected by default and opt out with `@PublicApi()`.
 
