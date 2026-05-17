@@ -50,10 +50,8 @@ features/user-profile/
 ├── components/                  # private subcomponents (one folder each)
 │   ├── UserProfileHeader/
 │   │   ├── UserProfileHeader.tsx
-│   │   └── index.ts
 │   └── UserProfileStats/
 │       ├── UserProfileStats.tsx
-│       └── index.ts
 ├── hooks/                       # widget-scoped hooks
 │   └── useUserProfile.ts
 ├── services/                    # widget-scoped API/data access
