@@ -12,6 +12,7 @@ description: Conventions for authoring NestJS backends — TypeORM entities inhe
 3. **CRUD-first** — drop to bespoke handlers only when CRUD cannot express the operation.
 4. **Swagger everywhere** — every controller, route, DTO, and entity decorated with `@nestjs/swagger` so OpenAPI is complete.
 5. **Global AuthGuard** registered via `APP_GUARD`; routes are protected by default and opt out with `@PublicApi()`.
+6. **Folder structure** — The folder structure should be inside app (`src/app/`) if the main module (`app.module.ts`) is inside app folder as well. This should be relevant mainly for NX monorepos.
 
 ## Shared model + entity (NX)
 
@@ -25,7 +26,7 @@ export interface UserModel {
 ```
 
 ```ts
-// apps/api/src/user/user.entity.ts
+// apps/api/src/app/user/user.entity.ts
 import { UserModel, UserRole } from '@user-lib/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
@@ -88,7 +89,7 @@ See [REFERENCE.md](REFERENCE.md) for the full guard implementation.
 ## Module layout
 
 ```
-apps/api/src/user/
+apps/api/src/app/user/
 ├── user.module.ts
 ├── user.controller.ts        # @Crud controller
 ├── user.service.ts           # extends TypeOrmCrudService<UserEntity>
