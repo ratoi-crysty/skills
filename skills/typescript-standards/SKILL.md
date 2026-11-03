@@ -1,6 +1,6 @@
 ---
 name: typescript-standards
-description: TypeScript typing conventions — ban `any`, require explicit function signatures, explicit variable types, and named interfaces over inline object types. Use when writing or refactoring TypeScript (.ts/.tsx) code, reviewing types, or when the user mentions TypeScript, type safety, `any`, `unknown`, interfaces, or type annotations.
+description: TypeScript typing conventions — ban `any`, require explicit function signatures, explicit variable types, named interfaces over inline object types, and `undefined` over `null`. Use when writing or refactoring TypeScript (.ts/.tsx) code, reviewing types, or when the user mentions TypeScript, type safety, `any`, `unknown`, `null`, interfaces, or type annotations.
 ---
 
 # TypeScript Standards
@@ -11,6 +11,7 @@ description: TypeScript typing conventions — ban `any`, require explicit funct
 2. **Explicit function signatures** — annotate every parameter and return type.
 3. **Explicit variable declarations** — annotate variables receiving values from functions, props, or destructured payloads.
 4. **Named types** — declare an `interface` / `type` instead of inline object types.
+5. **`undefined` over `null`** — one empty value; convert `null` at the boundary.
 
 ## 1. Ban `any`, use `unknown`
 
@@ -91,6 +92,44 @@ function getMedia(id: string): MediaResponse {
 - Co-locate type with its primary consumer; promote to a shared `types/` folder when reused.
 - Inline object types allowed only for one-off tuple-like internal helpers.
 
+## 5. `undefined` over `null`
+
+`undefined` is the single empty value in our code. One empty value means one check: `if (a !== undefined)` instead of `if (a !== undefined && a !== null)`.
+
+```ts
+// ❌ Bad
+interface User {
+  avatarUrl: string | null;
+}
+
+function findUser(id: string): User | null {
+  return users.get(id) ?? null;
+}
+
+// ✅ Good
+interface User {
+  avatarUrl?: string;
+}
+
+function findUser(id: string): User | undefined {
+  return users.get(id);
+}
+```
+
+- Model absence as an optional property (`prop?: T`) or `T | undefined`.
+- Convert `null` at the boundary: when a call returns `null` (`document.querySelector`, `localStorage.getItem`, `RegExp.exec`, library APIs), coalesce with `?? undefined` in the same scope, before the value is returned, stored, or passed on.
+
+```ts
+function getToken(): string | undefined {
+  return localStorage.getItem('token') ?? undefined;
+}
+```
+
+Use `null` only where the consumer requires it, and confine it to that boundary:
+- Serialized payloads whose contract requires the key to be present (`JSON.stringify` drops `undefined` keys).
+- Nullable DB columns (TypeORM skips `undefined` on update; clearing a column takes `null`).
+- APIs that demand it: React `useRef<T>(null)`, a component rendering nothing returns `null`, `Object.create(null)`.
+
 ## Checklist before committing
 
 - [ ] No `any` (including `as any`, `Array<any>`, `Record<string, any>`)
@@ -98,3 +137,4 @@ function getMedia(id: string): MediaResponse {
 - [ ] Variables from function returns / props / destructures are annotated
 - [ ] No inline `{ ... }` object types in signatures — extracted to named `interface` / `type`
 - [ ] `unknown` values are narrowed before use
+- [ ] Our own types use `?:` / `| undefined`; `null` from external calls is converted with `?? undefined` in the scope it enters, or confined to a boundary that requires `null`
